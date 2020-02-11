@@ -1,0 +1,112 @@
+#!/bin/bash
+Docker Swarm
+--------------------------------------
+1. What is Docker Swarm
+2. Why to use it
+3. How to create and manage Docker Swarm
+4. Create service on docker swarm
+5. Scalling services up and down (Horizontal)
+6. Features
+
+=========================================================================
+What is DockerSwarm
+=========================================================================
+A swarm is a group of machines that are running Docker and joined into a cluster.
+Docker Swarm is a clustering and scheduling tool for Docker containers.
+WIth Swarm, IT administrators and developers can establish and manage a cluster of Docker nodes asx a single virtual system.
+
+Docker Swarm is a tool for Container Orchestration.
+
+Example:
+	You have 200 Containers
+You need to do:
+	- Health check
+	- Ensure all containers are up on every system
+	- Scaling the containers up or down depending on the load
+	- Adding updates /changes to all the containers
+
+#Orchestration - Managing and controlling multiple docker containers as a single service
+#Tools available - Docker Swarm, Kubernetes, Apache Measos
+
+
+=========================================================================================
+	Install docker swarm
+=========================================================================================
+
+Pre-requisites
+	Docker 1.13 or Higher
+	Docker Machine 
+https://docs.docker.com/v17.09/machine/install-machine/
+#curl -L https://github.com/docker/machine/releases/download/v0.13.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine 
+#chmod +x /tmp/docker-machine
+#sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+
+========================================================================================================
+		Create DOcker Machines (Manager and Worker )
+========================================================================================================
+
+Pre-requisites
+
+In this case, we will need the following:
+
+A local machine installed with Docker. The machine can be running on Windows, Linux, or macOS.
+Three servers with CentOS 7 fully installed. One server will be the Manager node while the other two servers will be the Worker node.
+We will use the following IP address: 192.168.122.200 for Manager Node, 192.168.122.10 for Worker node1 and 192.168.122.11 for Worker node2.
+
+#Now, install the Docker version on each node. Set the docker repository system and run the command below on all the hostnames.
+#Step 2: Configuring Firewall on Each Node
+
+Port 2376, 2377, 7946, 4789, 80
+https://hostadvice.com/how-to/how-to-setup-docker-swarm-cluster-on-centos-7/
+
+
+
+
+#setup 1 
+create Docker machines ( to act as nodes for Docker Swarm)
+Create one machine as manager and others as workers
+
+Centos -1	manager			docker  install
+Centos -2	worker1			docker  install
+Centos -3 	worker2			docker  install
+
+initialize Docker swarm
+#centos 1
+#docker swarm init --advertise-addr manager-ip
+#docker swarm init --advertise-addr 192.168.122.200
+#docker node ls
+####Only manager and not in worker)
+
+#Join workers in the swarm 
+#run this cmd on manager
+
+#docker swarm join-token worker
+This will give cmd to join swarms as worker
+ssh into worker node and run the cmd to join swarm as worker
+in manager run cmd #docker node ls to verify worker is registered adn is ready
+#Do this for all worker machines
+
+#docker swarm join-toker manager
+This will give cmd to join swarms as manager
+
+#docker info
+#docker swarm
+
+========================================================================================================
+Create services
+========================================================================================================
+
+#docker service create --replicas 3 -p 80:80 --name web321 tomcat
+#docker service ls
+#docker service ps servicename
+#docker node ps web321
+
+
+========================================
+Scal up and down services
+========================================
+
+#docker service scale servicename=2
+#docker service scale web321=2
+#docker service scale web321=4
+
